@@ -1,0 +1,18 @@
+# Sample Terraform Enterprise Sentinel policy: deny creation of azurerm_public_ip resources
+# Attach this policy in a TFE policy set to prevent Terraform plans that create public IPs.
+
+import "tfplan/v2" as tfplan
+
+# collect all resource changes where a public IP resource is created
+public_ip_creates = [
+  rc
+  for rc in tfplan.resource_changes
+  if rc.type == "azurerm_public_ip" and "create" in rc.change.actions
+]
+
+# Also check for other resource types that may create public IPs indirectly (e.g., load balancer with public ip)
+# You can expand checks here to include azurerm_lb, azurerm_public_ip_prefix, etc.
+
+main = rule {
+  length(public_ip_creates) == 0
+}
