@@ -1,0 +1,29 @@
+{
+  "properties": {
+    "displayName": "Deny creation of public IPs",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy denies creation of public IP addresses. Use private endpoints or internal load balancers instead.",
+    "metadata": {
+      "category": "Network"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/publicIPAddresses"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/publicIPPrefixes"
+          }
+        ]
+      },
+      "then": {
+        "effect": "Deny"
+      }
+    }
+  }
+}
